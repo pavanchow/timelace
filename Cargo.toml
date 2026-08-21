@@ -1,0 +1,19 @@
+[package]
+name = "timelace"
+version = "0.1.0"
+edition = "2021"
+description = "A tiny content-addressed version control system, from scratch."
+authors = ["Pavan Nallamothu"]
+license = "MIT"
+
+[[bin]]
+name = "timelace"
+path = "src/main.rs"
+
+[lib]
+name = "timelace"
+path = "src/lib.rs"
+
+[dependencies]
+sha2 = "0.10"
+clap = { version = "4", features = ["derive"] }
