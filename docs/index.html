@@ -189,6 +189,143 @@
     border-bottom: 1px solid var(--line);
     font-size: 14px;
   }
+
+  .demo-lede { margin-bottom: 32px; }
+  .demo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+  }
+  @media (max-width: 780px) { .demo-grid { grid-template-columns: 1fr; } }
+  .demo-panel {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px 24px;
+  }
+  .demo-panel h3 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .demo-panel .demo-hint {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 16px;
+  }
+  .demo-full { grid-column: 1 / -1; }
+  .demo-field { margin-bottom: 12px; }
+  .demo-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .demo-field input[type="text"],
+  .demo-field textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 11px;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .demo-field textarea { min-height: 64px; resize: vertical; }
+  .demo-btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  button.btn {
+    cursor: pointer;
+    font-family: inherit;
+    background: var(--ink);
+    color: #fff;
+  }
+  button.btn:hover { background: #000; }
+  button.btn.ghost {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  button.btn.ghost:hover { background: var(--code-bg); }
+  button.btn.small {
+    padding: 6px 12px;
+    font-size: 12.5px;
+    border-radius: 6px;
+  }
+  table.demo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  table.demo-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  table.demo-table td {
+    padding: 8px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  table.demo-table tr:last-child td { border-bottom: none; }
+  .mono {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+  }
+  .id-chip {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 2px 6px;
+    cursor: help;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 999px;
+  }
+  .badge.blob { background: #eef4ff; color: #2b56d6; }
+  .badge.tree { background: #eefaf0; color: #1f8a44; }
+  .badge.commit { background: #fdeee6; color: var(--accent); }
+  .badge.dupe { background: #fff4e0; color: #9a6400; }
+  .demo-dupe-row { background: #fffaf0; }
+  .demo-log-entry {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .demo-log-entry .demo-log-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .demo-log-entry .demo-log-msg {
+    margin: 8px 0 0;
+    font-size: 14px;
+  }
+  .demo-banner {
+    font-size: 13px;
+    color: var(--accent);
+    margin: 0 0 14px;
+    min-height: 16px;
+  }
+  .demo-store-list { max-height: 220px; overflow-y: auto; }
+  .demo-empty { color: var(--muted); font-size: 13px; }
 </style>
 </head>
 <body>
@@ -216,6 +353,62 @@
     </div>
   </div>
 </header>
+
+<section>
+  <div class="wrap">
+    <h2>Try it right here</h2>
+    <p class="section-lede demo-lede">
+      This runs the same object model as the Rust source, in your browser, with real SHA-256 hashing.
+      Add a couple of files, commit them, add another file with content that already exists, and watch
+      it get the exact same blob id as its twin. Nothing here touches a network or a server.
+    </p>
+    <p class="demo-banner" id="demo-banner"></p>
+    <div class="demo-grid">
+      <div class="demo-panel">
+        <h3>Working files</h3>
+        <p class="demo-hint">Add a file, then add another with identical content and compare blob ids below.</p>
+        <div class="demo-field">
+          <label for="demo-add-name">Filename</label>
+          <input type="text" id="demo-add-name" placeholder="notes.txt">
+        </div>
+        <div class="demo-field">
+          <label for="demo-add-content">Content</label>
+          <textarea id="demo-add-content" placeholder="hello world"></textarea>
+        </div>
+        <div class="demo-btn-row">
+          <button class="btn small" id="demo-add-btn" type="button">Add file</button>
+        </div>
+        <table class="demo-table" style="margin-top:16px;">
+          <thead><tr><th>Name</th><th>Content</th><th>Blob id</th></tr></thead>
+          <tbody id="demo-files"></tbody>
+        </table>
+      </div>
+      <div class="demo-panel">
+        <h3>Commit</h3>
+        <p class="demo-hint">A commit hashes a tree of the working files above, plus the current HEAD as its parent.</p>
+        <div class="demo-field">
+          <label for="demo-commit-msg">Message</label>
+          <input type="text" id="demo-commit-msg" placeholder="describe this snapshot">
+        </div>
+        <div class="demo-btn-row">
+          <button class="btn small" id="demo-commit-btn" type="button">Commit</button>
+        </div>
+        <p class="demo-hint" style="margin-top:16px;">HEAD</p>
+        <p class="mono" id="demo-head">(no commits yet)</p>
+      </div>
+      <div class="demo-panel demo-full">
+        <h3>Commit log</h3>
+        <p class="demo-hint">Walked from HEAD by following each commit's parent link. Check out an earlier commit to restore its snapshot into the working files above.</p>
+        <div id="demo-log"></div>
+      </div>
+      <div class="demo-panel demo-full">
+        <h3>Object store</h3>
+        <p class="demo-hint">Every blob, tree, and commit ever created in this session, addressed only by the hash of its own bytes. Identical blob content always lands on the same id, so it is stored once.</p>
+        <div class="demo-store-list" id="demo-store"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section>
   <div class="wrap">
@@ -300,6 +493,281 @@ timestamp 1787349600
     <a href="https://github.com/pavanchow/timelace">github.com/pavanchow/timelace</a>.
   </div>
 </footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var store = Object.create(null);
+  var files = [];
+  var head = null;
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function shortId(id) {
+    return id ? id.slice(0, 10) + "…" : "";
+  }
+
+  function bytesToHex(bytes) {
+    var out = "";
+    for (var i = 0; i < bytes.length; i++) {
+      out += bytes[i].toString(16).padStart(2, "0");
+    }
+    return out;
+  }
+
+  async function sha256Hex(bytes) {
+    var digest = await window.crypto.subtle.digest("SHA-256", bytes);
+    return bytesToHex(new Uint8Array(digest));
+  }
+
+  function concatBytes(a, b) {
+    var out = new Uint8Array(a.length + b.length);
+    out.set(a, 0);
+    out.set(b, a.length);
+    return out;
+  }
+
+  async function objectId(kind, bodyBytes) {
+    var header = new TextEncoder().encode(kind + " " + bodyBytes.length + "\0");
+    var full = concatBytes(header, bodyBytes);
+    return sha256Hex(full);
+  }
+
+  async function makeBlob(content) {
+    var bodyBytes = new TextEncoder().encode(content);
+    var id = await objectId("blob", bodyBytes);
+    if (!store[id]) store[id] = { kind: "blob", content: content };
+    return id;
+  }
+
+  async function makeTree(entries) {
+    var sorted = entries.slice().sort(function (a, b) {
+      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
+    var text = "";
+    for (var i = 0; i < sorted.length; i++) {
+      text += "blob " + sorted[i].blobId + " " + sorted[i].name + "\n";
+    }
+    var bodyBytes = new TextEncoder().encode(text);
+    var id = await objectId("tree", bodyBytes);
+    if (!store[id]) store[id] = { kind: "tree", entries: sorted };
+    return id;
+  }
+
+  async function makeCommit(message, treeId, parentId, timestamp) {
+    var text = "tree " + treeId + "\n";
+    if (parentId) text += "parent " + parentId + "\n";
+    text += "timestamp " + timestamp + "\n\n" + message;
+    var bodyBytes = new TextEncoder().encode(text);
+    var id = await objectId("commit", bodyBytes);
+    if (!store[id]) {
+      store[id] = {
+        kind: "commit",
+        tree: treeId,
+        parent: parentId || null,
+        message: message,
+        timestamp: timestamp
+      };
+    }
+    return id;
+  }
+
+  async function addFileToWorkingSet(name, content) {
+    var blobId = await makeBlob(content);
+    var existing = files.find(function (f) { return f.name === name; });
+    if (existing) {
+      existing.content = content;
+      existing.blobId = blobId;
+    } else {
+      files.push({ name: name, content: content, blobId: blobId });
+    }
+  }
+
+  async function doCommit(message) {
+    if (files.length === 0) return null;
+    var entries = files.map(function (f) { return { name: f.name, blobId: f.blobId }; });
+    var treeId = await makeTree(entries);
+    var timestamp = Math.floor(Date.now() / 1000);
+    var commitId = await makeCommit(message || "(no message)", treeId, head, timestamp);
+    head = commitId;
+    return commitId;
+  }
+
+  function checkout(commitId) {
+    var commit = store[commitId];
+    if (!commit || commit.kind !== "commit") return;
+    var tree = store[commit.tree];
+    files = tree.entries.map(function (e) {
+      return { name: e.name, content: store[e.blobId].content, blobId: e.blobId };
+    });
+    head = commitId;
+    setBanner("Checked out " + shortId(commitId) + ". Working files now match that snapshot.");
+    renderAll();
+  }
+
+  function setBanner(text) {
+    document.getElementById("demo-banner").textContent = text || "";
+  }
+
+  function blobIdCounts() {
+    var counts = Object.create(null);
+    files.forEach(function (f) {
+      counts[f.blobId] = (counts[f.blobId] || 0) + 1;
+    });
+    return counts;
+  }
+
+  function renderFiles() {
+    var body = document.getElementById("demo-files");
+    if (files.length === 0) {
+      body.innerHTML = '<tr><td colspan="3" class="demo-empty">No files yet. Add one above.</td></tr>';
+      return;
+    }
+    var counts = blobIdCounts();
+    var rows = files.map(function (f) {
+      var dupe = counts[f.blobId] > 1;
+      var preview = f.content.length > 40 ? f.content.slice(0, 40) + "…" : f.content;
+      return (
+        '<tr class="' + (dupe ? "demo-dupe-row" : "") + '">' +
+        "<td>" + escapeHtml(f.name) + "</td>" +
+        "<td>" + escapeHtml(preview) + "</td>" +
+        "<td><span class=\"id-chip\" title=\"" + escapeHtml(f.blobId) + "\">" + escapeHtml(shortId(f.blobId)) + "</span>" +
+        (dupe ? ' <span class="badge dupe">same blob</span>' : "") +
+        "</td></tr>"
+      );
+    });
+    body.innerHTML = rows.join("");
+  }
+
+  function renderHead() {
+    document.getElementById("demo-head").textContent = head ? head : "(no commits yet)";
+  }
+
+  function renderLog() {
+    var container = document.getElementById("demo-log");
+    var out = [];
+    var cursor = head;
+    var guard = 0;
+    while (cursor && store[cursor] && guard < 1000) {
+      var c = store[cursor];
+      out.push(
+        '<div class="demo-log-entry">' +
+        '<div class="demo-log-head">' +
+        '<span class="id-chip" title="' + escapeHtml(cursor) + '">' + escapeHtml(shortId(cursor)) + "</span>" +
+        '<span class="mono" style="color:var(--muted)">tree ' + escapeHtml(shortId(c.tree)) + "</span>" +
+        '<button class="btn ghost small" type="button" data-checkout="' + escapeHtml(cursor) + '">Check out</button>' +
+        "</div>" +
+        '<p class="demo-log-msg">' + escapeHtml(c.message) + "</p>" +
+        '<p class="demo-hint" style="margin:6px 0 0;">' + new Date(c.timestamp * 1000).toLocaleString() + "</p>" +
+        "</div>"
+      );
+      cursor = c.parent;
+      guard++;
+    }
+    container.innerHTML = out.length ? out.join("") : '<p class="demo-empty">No commits yet.</p>';
+    container.querySelectorAll("[data-checkout]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        checkout(btn.getAttribute("data-checkout"));
+      });
+    });
+  }
+
+  function renderStore() {
+    var container = document.getElementById("demo-store");
+    var ids = Object.keys(store);
+    if (ids.length === 0) {
+      container.innerHTML = '<p class="demo-empty">Empty. Add a file and commit to populate it.</p>';
+      return;
+    }
+    var counts = { blob: 0, tree: 0, commit: 0 };
+    var rows = ids.map(function (id) {
+      var obj = store[id];
+      counts[obj.kind]++;
+      var detail = "";
+      if (obj.kind === "blob") {
+        var preview = obj.content.length > 60 ? obj.content.slice(0, 60) + "…" : obj.content;
+        detail = escapeHtml(preview);
+      } else if (obj.kind === "tree") {
+        detail = obj.entries.map(function (e) { return escapeHtml(e.name) + "@" + escapeHtml(shortId(e.blobId)); }).join(", ");
+      } else {
+        detail = escapeHtml(obj.message);
+      }
+      return (
+        '<div style="display:flex;gap:10px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line);">' +
+        '<span class="badge ' + obj.kind + '">' + obj.kind + "</span>" +
+        '<span class="id-chip" title="' + escapeHtml(id) + '">' + escapeHtml(shortId(id)) + "</span>" +
+        '<span class="mono" style="color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + detail + "</span>" +
+        "</div>"
+      );
+    });
+    var summary =
+      '<p class="demo-hint" style="margin-bottom:10px;">' +
+      counts.blob + " blob" + (counts.blob === 1 ? "" : "s") + ", " +
+      counts.tree + " tree" + (counts.tree === 1 ? "" : "s") + ", " +
+      counts.commit + " commit" + (counts.commit === 1 ? "" : "s") +
+      " stored, " + ids.length + " objects total.</p>";
+    container.innerHTML = summary + rows.join("");
+  }
+
+  function renderAll() {
+    renderFiles();
+    renderHead();
+    renderLog();
+    renderStore();
+  }
+
+  function wireControls() {
+    document.getElementById("demo-add-btn").addEventListener("click", async function () {
+      var nameInput = document.getElementById("demo-add-name");
+      var contentInput = document.getElementById("demo-add-content");
+      var name = nameInput.value.trim();
+      var content = contentInput.value;
+      if (!name) {
+        setBanner("Give the file a name first.");
+        return;
+      }
+      await addFileToWorkingSet(name, content);
+      nameInput.value = "";
+      contentInput.value = "";
+      setBanner("Added " + name + ". Its blob id is the hash of its content, nothing else.");
+      renderAll();
+    });
+
+    document.getElementById("demo-commit-btn").addEventListener("click", async function () {
+      var msgInput = document.getElementById("demo-commit-msg");
+      var message = msgInput.value.trim() || "(no message)";
+      var commitId = await doCommit(message);
+      if (!commitId) {
+        setBanner("Add at least one file before committing.");
+        return;
+      }
+      msgInput.value = "";
+      setBanner("Committed " + shortId(commitId) + ".");
+      renderAll();
+    });
+  }
+
+  async function preload() {
+    await addFileToWorkingSet("notes.txt", "hello world");
+    await addFileToWorkingSet("copy.txt", "hello world");
+    await addFileToWorkingSet("readme.md", "timelace demo repository");
+    await doCommit("initial import");
+    setBanner("Preloaded three files. notes.txt and copy.txt share identical content, so they already share one blob id below.");
+    renderAll();
+  }
+
+  wireControls();
+  preload();
+})();
+</script>
 
 </body>
 </html>
