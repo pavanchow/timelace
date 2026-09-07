@@ -7,6 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <meta name="description" content="Timelace is a tiny content-addressed version control system in Rust. A readable, git-shaped VCS with blobs, trees, and commits, built from scratch.">
 <meta name="author" content="Pavan Nallamothu (pavanchow)">
+<meta name="keywords" content="version control, content-addressed storage, object model, blob tree commit, SHA-256, git internals, commit graph, content addressing, deduplication, checkout, from scratch, Rust VCS, Pavan Nallamothu, pavanchow">
 <link rel="canonical" href="https://pavanchow.github.io/timelace/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Timelace: a content-addressed version control system in Rust">
@@ -22,6 +23,7 @@
   "name": "Timelace",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "macOS, Linux, Windows",
+  "softwareVersion": "0.1.0",
   "description": "A tiny content-addressed version control system in Rust, with a readable object model of blobs, trees, and commits.",
   "author": {
     "@type": "Person",
@@ -58,6 +60,7 @@
   nav .brand .gem{width:16px;height:16px;transform:rotate(45deg);border-radius:3px;background:linear-gradient(135deg,#e8926f,var(--accent))}
   nav .links{display:flex;gap:26px;align-items:center}
   nav .links a{color:var(--ink);font-size:14.5px}
+  nav .links .v{color:var(--faint);font-family:var(--mono);font-size:12px}
   @media(max-width:640px){nav .links a:not(.gh){display:none}}
 
   .hero{padding:70px 0 30px;text-align:center}
@@ -95,6 +98,13 @@
   .cmd-line .accent{color:#e8926f;font-weight:600}
 
   .layout{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px;font-family:var(--mono);font-size:13.5px;line-height:1.75;color:var(--ink);white-space:pre;overflow-x:auto;max-width:680px;margin:40px auto 0}
+
+  .rows{max-width:820px;margin:44px auto 0}
+  .rows .r{display:grid;grid-template-columns:minmax(160px,1fr) 2fr;gap:14px 38px;padding:22px 0;border-top:1px solid var(--line)}
+  .rows .r:first-child{border-top:none}
+  .rows .r b{font-size:17px}.rows .r p{color:var(--muted);margin:0;font-size:15px}
+  @media(max-width:640px){.rows .r{grid-template-columns:1fr;gap:6px}}
+  pre .id{color:#e8926f}
 
   footer{padding:64px 0;border-top:1px solid var(--line);text-align:center;color:var(--muted)}
   footer .name{color:var(--ink);font-weight:600}
@@ -148,8 +158,8 @@
 <nav><div class="row">
   <div class="brand"><img src="logo.svg" class="brandlogo" alt="" width="22" height="22">Timelace</div>
   <div class="links">
-    <a href="#demo">Demo</a><a href="#model">How it works</a><a href="#layout">Layout</a>
-    <a class="gh" href="https://github.com/pavanchow/timelace">GitHub</a>
+    <a href="#demo">Demo</a><a href="#model">Model</a><a href="#differs">How it differs</a><a href="#use">Use it</a>
+    <a class="gh" href="https://github.com/pavanchow/timelace">GitHub</a><span class="v">v0.1.0</span>
   </div>
 </div></nav>
 
@@ -251,22 +261,58 @@
 
 <section>
   <h2>A five-minute walkthrough</h2>
-  <p class="lead">The full workflow, initialize a repository, stage a file, commit it, and check it back out.</p>
+  <p class="lead">The full workflow, initialize a repository, stage a file, commit it twice, walk the history, and check an earlier snapshot back out. This is real output captured from the CLI.</p>
   <pre><code><span class="cmd-line"><span class="accent">$</span> timelace init</span>
 initialized empty timelace repository in ./.timelace
 
 <span class="cmd-line"><span class="accent">$</span> echo "hello" > notes.txt
 <span class="accent">$</span> timelace add notes.txt
 <span class="accent">$</span> timelace commit -m "first commit"</span>
-committed 4b7b6338afbc1a9b9b0fbaae5866a8483f70ec56f0d0b2630e4955788624edc9
+committed a3dd0375a9657697e621c10312a6f272b1bb8fdd97dacb8da2f6a4f3bd932e35
+
+<span class="cmd-line"><span class="accent">$</span> echo "hello again" > notes.txt
+<span class="accent">$</span> timelace add notes.txt
+<span class="accent">$</span> timelace commit -m "second commit"</span>
+committed a36723d63290713b16b3e4590038a3dfe37a7d76b03f81dcc81aa0769b019d05
 
 <span class="cmd-line"><span class="accent">$</span> timelace log</span>
-commit 4b7b6338afbc1a9b9b0fbaae5866a8483f70ec56f0d0b2630e4955788624edc9
-timestamp 1787349600
+commit a36723d63290713b16b3e4590038a3dfe37a7d76b03f81dcc81aa0769b019d05
+timestamp 1788785036
+
+    second commit
+
+commit a3dd0375a9657697e621c10312a6f272b1bb8fdd97dacb8da2f6a4f3bd932e35
+timestamp 1788785034
 
     first commit
 
-<span class="cmd-line"><span class="accent">$</span> timelace checkout 4b7b6338afbc1a9b9b0fbaae5866a8483f70ec56f0d0b2630e4955788624edc9</span></code></pre>
+<span class="cmd-line"><span class="accent">$</span> timelace checkout a3dd0375a9657697e621c10312a6f272b1bb8fdd97dacb8da2f6a4f3bd932e35
+<span class="accent">$</span> cat notes.txt</span>
+hello</code></pre>
+</section>
+
+<section>
+  <h2>Content addressing, in one command</h2>
+  <p class="lead">Because an object's id is the hash of its own bytes, deduplication needs no bookkeeping. Stage two different files with identical content, and the tree records one blob for both.</p>
+  <pre><code><span class="cmd-line"><span class="accent">$</span> printf 'hello\n' > a.txt
+<span class="accent">$</span> printf 'hello\n' > b.txt        <span class="c"># identical content, different name</span>
+<span class="accent">$</span> timelace add a.txt
+<span class="accent">$</span> timelace add b.txt
+<span class="accent">$</span> timelace commit -m "two identical files"</span>
+committed c5461d0b23fd0081cc9a6a16be0a76b4ddcb695672165f38cd3f229424a032cd
+
+<span class="cmd-line"><span class="accent">$</span> find .timelace/objects -type f | wc -l</span>
+3                                     <span class="c"># one commit, one tree, one shared blob</span></code></pre>
+</section>
+
+<section id="differs">
+  <h2>How it differs</h2>
+  <p class="lead">Timelace is not a git replacement. It is the same object model git is built on, implemented directly and left readable, with the layers that are not the point stripped away.</p>
+  <div class="rows">
+    <div class="r"><b>Git's object model</b><p>Content-addressed blobs, trees, and commits are exactly how git stores history underneath. The idea is small, but the real implementation buries it under packfiles, refs, the index cache, and decades of features.</p></div>
+    <div class="r"><b>Timelace</b><p>The same content addressing done directly: SHA-256 over a framed object, a two-level object directory, a HEAD pointer, and a staging index. No branches, remotes, merges, or packfiles, so the whole model fits in one file you can read in five minutes.</p></div>
+    <div class="r"><b>What you get</b><p>init, add, commit, log, status, and checkout, with automatic deduplication and exact working-tree restoration, all covered by an integration suite. Read <code>src/objects.rs</code> and you have read the entire model.</p></div>
+  </div>
 </section>
 
 <section id="layout">
@@ -276,6 +322,24 @@ timestamp 1787349600
   objects/&lt;id[0..2]&gt;/&lt;id[2..]&gt;    one file per object
   HEAD                             latest commit id
   index                            paths staged for the next commit</div>
+</section>
+
+<section id="use">
+  <h2>Use it</h2>
+  <p class="lead">A CLI over the object store, a Rust library underneath it, and an integration suite that pins the behavior down.</p>
+  <div class="rows">
+    <div class="r"><b>CLI</b><p><code>init</code>, <code>add</code>, <code>commit</code>, <code>log</code>, <code>status</code>, and <code>checkout</code>. A file argument to <code>add</code> can be a single path or a whole directory.</p></div>
+    <div class="r"><b>Library</b><p>The object model in <code>objects.rs</code> and the store in <code>store.rs</code> are a plain Rust library. The only dependencies are <code>sha2</code> for hashing and <code>clap</code> for argument parsing; the model itself is from scratch.</p></div>
+    <div class="r"><b>Tests</b><p><code>cargo test</code> runs 15 tests: initialization, staging and committing, parent-chain linking, log ordering, content deduplication, exact checkout restoration, and the error paths for operating outside a repository, unknown ids, and an empty commit.</p></div>
+  </div>
+  <pre><code><span class="cmd-line"><span class="accent">$</span> cargo test</span>
+     Running unittests src/lib.rs
+running 6 tests
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+     Running tests/integration.rs
+running 9 tests
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out</code></pre>
 </section>
 
 <section>
