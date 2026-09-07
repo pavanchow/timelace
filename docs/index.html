@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Timelace: a content-addressed version control system in Rust</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
 <meta name="description" content="Timelace is a tiny content-addressed version control system in Rust. A readable, git-shaped VCS with blobs, trees, and commits, built from scratch.">
 <meta name="author" content="Pavan Nallamothu (pavanchow)">
 <link rel="canonical" href="https://pavanchow.github.io/timelace/">
@@ -153,6 +154,7 @@
 </div></nav>
 
 <div class="hero">
+  <img src="logo.svg" alt="Timelace logo" width="72" height="72">
   <p class="eyebrow">Rust · content-addressed · git-shaped</p>
   <h1>See the whole<br>object model.</h1>
   <p class="sub">Timelace is a tiny content-addressed version control system in Rust, small enough to read in one sitting. Blobs, trees, and commits, each one addressed by the SHA-256 hash of its own bytes. Here is the real object model, running in your browser.</p>
@@ -161,6 +163,18 @@
     <a class="btn ghost" href="https://github.com/pavanchow/timelace#readme">Read the docs</a>
   </div>
 </div>
+
+<details style="max-width:940px;margin:26px auto 0;padding:0 28px">
+  <summary style="cursor:pointer;font-weight:600;font-size:15px">How to use this playground</summary>
+  <div style="margin-top:12px;color:var(--muted,#7c8492);font-size:15px;line-height:1.6">
+    Build a tiny repository in your browser: add files, commit snapshots, and watch the content-addressed object store fill up.
+    <ul style="margin:10px 0 0;padding-left:20px">
+      <li><b>Working files:</b> add a file, then add another with identical content and compare their blob ids - identical bytes always share one object.</li>
+      <li><b>Commit:</b> write a message and snapshot the working files; HEAD moves to the new commit, with the previous one as its parent.</li>
+      <li><b>Commit log &amp; object store:</b> walk history from HEAD, check out an earlier commit to restore its snapshot, and see every blob, tree, and commit addressed by the SHA-256 of its own bytes.</li>
+    </ul>
+  </div>
+</details>
 
 <div id="demo" class="stage">
   <div class="card">

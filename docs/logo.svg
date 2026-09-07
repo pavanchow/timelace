@@ -1,0 +1,10 @@
+<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Timelace logo">
+  <path d="M50 26 V70 a20 20 0 0 0 20 20 h8" fill="none" stroke="#8b5cf6" stroke-width="7" stroke-linecap="round"/>
+  <line x1="50" y1="30" x2="50" y2="102" stroke="#8b5cf6" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="50" cy="26" r="13" fill="#8b5cf6"/>
+  <circle cx="50" cy="26" r="5" fill="#fff"/>
+  <circle cx="50" cy="102" r="13" fill="#8b5cf6"/>
+  <circle cx="50" cy="102" r="5" fill="#fff"/>
+  <circle cx="90" cy="90" r="13" fill="#c4b5fd"/>
+  <circle cx="90" cy="90" r="5" fill="#fff"/>
+</svg>

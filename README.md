@@ -1,3 +1,5 @@
+<img src="docs/logo.svg" alt="Timelace logo" width="96">
+
 # Timelace
 
 **A tiny, readable version control system in Rust, built from scratch.**
