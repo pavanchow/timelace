@@ -43,33 +43,35 @@ The header participates in the hash, so a blob and a tree that happen to contain
 
 ```
 $ timelace init
-initialized empty timelace repository in ./.timelace
+initialized empty timelace repository in /private/tmp/project/.timelace
 
 $ echo "hello" > notes.txt
 $ timelace add notes.txt
 $ timelace commit -m "first commit"
-committed 4b7b6338afbc1a9b9b0fbaae5866a8483f70ec56f0d0b2630e4955788624edc9
+committed 77642000a13cdb7a35944707b55d17b55a4c68643dde9bb3f02c81962bb70cd7
 
 $ echo "hello again" > notes.txt
 $ timelace add notes.txt
 $ timelace commit -m "second commit"
-committed 1ca8312577a85d387f38460fab46a8dd357367a43e8e707d9dc7100e627c8a50
+committed 5b9257ebf399225f1fd614ba0eeb49f05614a6d4e305479abbbe1cc168acf919
 
 $ timelace log
-commit 1ca8312577a85d387f38460fab46a8dd357367a43e8e707d9dc7100e627c8a50
-timestamp 1787349638
+commit 5b9257ebf399225f1fd614ba0eeb49f05614a6d4e305479abbbe1cc168acf919
+timestamp 1788787443
 
     second commit
 
-commit 4b7b6338afbc1a9b9b0fbaae5866a8483f70ec56f0d0b2630e4955788624edc9
-timestamp 1787349600
+commit 77642000a13cdb7a35944707b55d17b55a4c68643dde9bb3f02c81962bb70cd7
+timestamp 1788787441
 
     first commit
 
-$ timelace checkout 4b7b6338afbc1a9b9b0fbaae5866a8483f70ec56f0d0b2630e4955788624edc9
+$ timelace checkout 77642000a13cdb7a35944707b55d17b55a4c68643dde9bb3f02c81962bb70cd7
 $ cat notes.txt
 hello
 ```
+
+The `init` line prints the absolute path of your working directory, so yours will differ. A commit id is the SHA-256 of the commit's own bytes, which include its timestamp, so re-running these steps produces different commit ids each time. Blob and tree ids, by contrast, are pure content hashes and are identical on every run.
 
 Two files with identical content always share one blob object, verified in the test suite: stage two different files with the same bytes, commit, and the tree records one object id for both.
 
