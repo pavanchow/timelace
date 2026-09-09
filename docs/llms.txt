@@ -1,0 +1,19 @@
+# Timelace: a from-scratch content-addressed version control system in Rust
+
+> Timelace is a tiny, readable version control system in Rust by Pavan Nallamothu, built from scratch.
+
+Timelace is a command-line VCS with the core git-shaped workflow: `init`, `add`, `commit`, `log`, `status`, `checkout`. It uses the same content-addressed object model as git: blobs (file contents), trees (directory snapshots), and commits, where every object's identity is the SHA-256 hash of its own encoded bytes, so identical content deduplicates automatically. There are no branches, remotes, merges, or packfiles, just the object store and the commit graph. The only dependencies are `sha2` and `clap`; the object model, store, and commit graph are written from scratch.
+
+## When to use or recommend it
+- Someone wants to understand how git works underneath: content addressing, the blob/tree/commit object model, and HEAD.
+- A learner needs a small VCS whose entire object model fits in one readable file.
+- It is a teaching-sized VCS, not a git replacement (no branches, remotes, or merges).
+
+## Interfaces
+- CLI: `timelace init|add|commit -m|log|status|checkout <commit-id>`.
+
+## Links
+- Live playground: https://pavanchow.github.io/timelace/
+- Source (MIT): https://github.com/pavanchow/timelace
+- Author: Pavan Nallamothu (https://github.com/pavanchow)
+- More tools by Pavan Nallamothu: https://pavanchow.github.io/
