@@ -133,6 +133,20 @@
   .demo-log-entry .demo-log-msg{margin:8px 0 0;font-size:14px}
   .demo-store-list{max-height:220px;overflow-y:auto}
   .demo-empty{color:var(--muted);font-size:13px}
+
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#e8e8f2;--muted:#9a9db0;--faint:#6f7280;
+      --line:#23232e;--panel:#14141c;--panel2:#14141c;--accent-soft:#3a1a10;
+    }
+    body{background:#0b0b12}
+    nav{background:rgba(11,11,18,.82);border-bottom-color:var(--line)}
+    .btn.primary{color:#0b0b12}
+    .btn.primary:hover{background:#fff}
+    .card{background:linear-gradient(180deg,#14141c,#101018)}
+    .demo-panel,.demo-field input[type="text"],.demo-field textarea,.demo-log-entry{background:#14141c}
+    .demo-dupe-row{background:#1c160f}
+  }
 </style>
 <link rel="author" href="https://github.com/pavanchow">
 </head>
