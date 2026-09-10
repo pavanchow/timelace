@@ -6,6 +6,8 @@ Timelace is a tiny content-addressed version control system written from scratch
 
 **[Live demo](https://pavanchow.github.io/timelace/)** · MIT licensed · written in Rust
 
+Built from scratch by [Pavan Nallamothu](https://pavanchow.github.io/) ([LinkedIn](https://www.linkedin.com/in/pavanchow/), [GitHub](https://github.com/pavanchow)).
+
 Git works the same way underneath: content-addressed blobs, trees, and commits linked by SHA-256 hashes. But git's implementation is enormous, and the object model gets buried under decades of features. Timelace strips that away. It is a small, from-scratch, content-addressed version control system where the entire object model fits in one file you can actually read in five minutes.
 
 ## What it is
